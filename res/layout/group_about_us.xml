@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- group -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#F3F2F2"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/about_us"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@drawable/blue_bg_fang" >
+
+        <ImageView
+            android:id="@+id/sanjiao_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/blue_bg_sanjiao" />
+
+        <ImageButton
+            android:id="@+id/group_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/about_us" />
+    </RelativeLayout> <!-- child -->
+
+    <LinearLayout
+        android:id="@+id/AboutViewGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/child_about_1"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:id="@+id/about_sanjiao_child"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/grey_sanjiao" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/team_introduction" />
+
+            <ImageView
+                android:id="@+id/team_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dip"
+                android:background="@drawable/team_logo" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2px"
+            android:background="@drawable/lt_listview_line" />
+
+        <RelativeLayout
+            android:id="@+id/child_about_2"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/weibo" />
+
+            <ImageView
+                android:id="@+id/team_weibo_yuqian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:layout_toRightOf="@id/text"
+                android:background="@drawable/yuqian" />
+
+            <ImageView
+                android:id="@+id/team_weibo_wangwei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:layout_toRightOf="@id/team_weibo_yuqian"
+                android:background="@drawable/wangwei" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2px"
+            android:background="@drawable/lt_listview_line" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/the_last_sanjiao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/blue_bg_sanjiao" />
+
+</LinearLayout>

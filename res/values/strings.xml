@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QuicK</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="ticker_text">QuicK保存中...</string>
+    <string name="save_success">QuicK保存成功.</string>
+    <string name="save_successful">触摸可查看您的QuicK文件.</string>
+        
+    <string name="menu_settings">Settings</string>
+    <string name="takePicture">takePicture</string>
+    <string name="autoFocus">autoFocus</string>
+	<string name="noSDCard">请挂载SD卡</string>
+	<string name="viedo_ok">拍摄成功!</string>
+    <string name="recordOK">录音完成！</string>
+    <string name="openFlash">照相打开闪光灯</string>
+    <string name="takePhoto">照相</string>
+        <string name="app_name_file">File dialog</string>
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Error</string>
+</resources>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- group -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#F3F2F2"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/vedio"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@drawable/blue_bg_fang" >
+
+        <ImageView
+            android:id="@+id/sanjiao_vedio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/blue_bg_sanjiao"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/group_vedio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/vedio_title" />
+    </RelativeLayout> <!-- child -->
+
+    <LinearLayout
+        android:id="@+id/child_video"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/child_vedio_1"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height">
+
+            <ImageView
+                android:id="@+id/video_sanjiao_child"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/grey_sanjiao" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/vedio_openflash" />
+
+            <com.uniquestudio.view.SwitchButton
+                android:id="@+id/vedio_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

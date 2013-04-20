@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- group -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#F3F2F2"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/camera"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@drawable/grey_bg_fang" >
+
+        <ImageButton
+            android:id="@+id/group_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/camera_title" />
+    </RelativeLayout> <!-- child -->
+
+    <LinearLayout
+        android:id="@+id/cameraViewGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/child_camera_1"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:id="@+id/camera_sanjiao_child"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/grey_sanjiao"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/quickphoto_or_not" />
+
+            <com.uniquestudio.view.SwitchButton
+                android:id="@+id/photo_imediate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2px"
+            android:background="@drawable/lt_listview_line" />
+
+        <RelativeLayout
+            android:id="@+id/child_camera_2"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/continuous_photoshot" />
+
+            <com.uniquestudio.view.SwitchButton
+                android:id="@+id/photo_continuous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2px"
+            android:background="@drawable/lt_listview_line" />
+
+        <RelativeLayout
+            android:id="@+id/child_camera_3"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/photo_openflash" />
+
+            <com.uniquestudio.view.SwitchButton
+                android:id="@+id/photo_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2px"
+            android:background="@drawable/lt_listview_line" />
+
+        <RelativeLayout
+            android:id="@+id/child_camera_4"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/child_height" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dip"
+                android:adjustViewBounds="true"
+                android:background="@drawable/autofocus" />
+
+            <com.uniquestudio.view.SwitchButton
+                android:id="@+id/photo_autofocus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

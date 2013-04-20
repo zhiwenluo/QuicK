@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- group -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#F3F2F2"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/storage"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:background="@drawable/blue_bg_fang" >
+
+
+        <ImageView
+            android:id="@+id/sanjiao_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/blue_bg_sanjiao" />
+
+        <ImageButton
+            android:id="@+id/group_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/storage_location" />
+    </RelativeLayout> <!-- child -->
+
+</LinearLayout>
