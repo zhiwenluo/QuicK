@@ -3,13 +3,12 @@
  
     <alpha
         android:duration="150"
-        android:fillAfter="true"
         android:fromAlpha="0"
         android:toAlpha="1.0" >
         <alpha
             android:duration="150"
-            android:fromAlpha="1"
-            android:startOffset="150"
+            android:fromAlpha="1.0"
+            android:startOffset="200"
             android:toAlpha="0" />
         <alpha />
     </alpha>

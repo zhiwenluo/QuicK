@@ -8,21 +8,21 @@
         android:id="@+id/record_light"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/record_light" />
+        android:background="@drawable/record_light" />
 
     <ImageView
         android:id="@+id/record_rotate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/record_rotate"
+        android:background="@drawable/record_rotate"
          />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" 
-        android:src="@drawable/record_icon"
+        android:background="@drawable/record_icon"
         />
 
     <Button

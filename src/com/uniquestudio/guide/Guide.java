@@ -22,6 +22,7 @@ public class Guide extends Activity {
     void GoToWhickActivity() {
         Intent intent = new Intent();
         if (sharedPreferences.getBoolean("isFirstTime", true)) {
+            intent.putExtra("id", 0);
             intent.setClass(Guide.this, GuideViewActivity.class);
             sharedPreferences.edit().putBoolean("isFirstTime", false).commit();
         } else {

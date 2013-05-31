@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:weightSum="1" >
@@ -13,7 +13,7 @@
         android:id="@+id/photo_take_bg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/photo_take"
+        android:background="@drawable/photo_take"
         android:visibility="invisible"
         />
     <LinearLayout
@@ -35,4 +35,14 @@
         android:layout_height="match_parent" >
     </ImageView>
 
-</RelativeLayout>
+    <ImageButton 
+        android:visibility="gone"
+        android:id="@+id/flash_photo_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_gravity="right"
+        android:background="@drawable/widget_photo"
+        />
+</FrameLayout>

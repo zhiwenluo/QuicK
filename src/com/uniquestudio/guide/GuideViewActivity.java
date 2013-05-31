@@ -31,9 +31,9 @@ public class GuideViewActivity extends Activity{
     private ViewGroup main;  
     private ImageView[] imageViews ; 
     private ImageView imageView; 
-    private ImageView firImageView;
+    private ImageView firImageView , secondImageView , thirdImageView;
     private ImageButton lastGuide;
-    private View lastViewPager, firstViewPager;
+    private View lastViewPager, firstViewPager , secondViewPager , thirdViewPager;
 	private Animation alphaAnimation = null;
 	private ViewGroup group;
 	
@@ -43,24 +43,52 @@ public class GuideViewActivity extends Activity{
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out); 
+        
+        Intent intent = getIntent();
+        int id = intent.getIntExtra("id", 1);
+        
         LayoutInflater inflater = getLayoutInflater();  
         pageViews = new ArrayList<View>();  
         firstViewPager = inflater.inflate(R.layout.guide_item01, null);
+        secondViewPager = inflater.inflate(R.layout.guide_item02, null);
+        thirdViewPager = inflater.inflate(R.layout.guide_item03, null);
         lastViewPager = inflater.inflate(R.layout.guide_item04, null);
-        pageViews.add(firstViewPager);  
-        pageViews.add(inflater.inflate(R.layout.guide_item02, null));  
-        pageViews.add(inflater.inflate(R.layout.guide_item03, null));  
-        pageViews.add(lastViewPager);   
+        
+        
+        if(id == 0) {
+            
+            pageViews.add(firstViewPager);  
+            pageViews.add(secondViewPager);  
+            pageViews.add(thirdViewPager);  
+            pageViews.add(lastViewPager);   
+        }else {
+            pageViews.add(secondViewPager);  
+            pageViews.add(thirdViewPager);  
+            pageViews.add(lastViewPager);   
+        }
+
   
         imageViews = new ImageView[pageViews.size()];  
         
         main = (ViewGroup)inflater.inflate(R.layout.guide_main, null);  
         group = (ViewGroup)main.findViewById(R.id.viewGroup);  
-        firImageView = (ImageView) this.firstViewPager.findViewById(R.id.colorView);
         alphaAnimation = AnimationUtils.loadAnimation(this  , R.anim.alpha_guide);
         
+        firImageView = (ImageView) this.firstViewPager.findViewById(R.id.colorView);
+        secondImageView = (ImageView) this.secondViewPager.findViewById(R.id.second_guide);
+        thirdImageView = (ImageView) this.thirdViewPager.findViewById(R.id.third_guide);
         lastGuide = (ImageButton) this.lastViewPager.findViewById(R.id.last_guide_page);
         viewPager = (ViewPager)main.findViewById(R.id.guidePages);   
+        
+        if (id == 0) {
+            secondImageView.setBackgroundResource(R.drawable.guide_2);
+            thirdImageView.setBackgroundResource(R.drawable.guide_3);
+            lastGuide.setBackgroundResource(R.drawable.guide_4);
+        }else {
+            secondImageView.setBackgroundResource(R.drawable.help_1);
+            thirdImageView.setBackgroundResource(R.drawable.help_2);
+            lastGuide.setBackgroundResource(R.drawable.help_3);
+        }
         
         for (int i = 0; i < pageViews.size(); i++) {  
             imageView = new ImageView(GuideViewActivity.this);  

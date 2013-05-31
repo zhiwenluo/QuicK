@@ -103,23 +103,26 @@
         android:layout_below="@+id/toolbox"
         android:background="#F3F2F2"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
+
+        >
 
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/dir_blue" />
+            android:background="@drawable/dir_blue" />
 
         <TextView
             android:id="@+id/path"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            
             android:visibility="gone" />
         <ImageView 
             android:layout_marginTop="15dip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+        android:paddingRight="10dp" 
             android:src="@drawable/root_location"
             />
 
@@ -127,6 +130,8 @@
             android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" 
+                    android:paddingLeft="10dip"
+        android:paddingRight="10dip" 
             android:divider="@drawable/dir_divide"
             />
 

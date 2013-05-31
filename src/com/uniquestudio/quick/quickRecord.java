@@ -32,206 +32,217 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class quickRecord extends Activity implements OnClickListener,
-		android.view.GestureDetector.OnGestureListener {
-	private Resources resources;
+        android.view.GestureDetector.OnGestureListener {
+    private Resources resources;
 
     private MyAsyncTask myAsyncTask;
-	private Button btnRecord;
-	public static MediaRecorder mRecorder;
-	private GestureDetector gestureDetector;
-	private ImageView recordLight , recordRotate;
-	private Animation rotateAnimation , alphaAnimation;
 
-    public static final String STORAGE_LOCATION = Environment.getExternalStorageDirectory() + "/Android/data/uniquesudio.QuicK/record";
+    private Button btnRecord;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.quick_record);
-		init();
-		initAnimation();
-	}
+    public static MediaRecorder mRecorder;
 
-	@SuppressWarnings("deprecation")
-	private void init() {
-	    
-	    recordLight = (ImageView) findViewById(R.id.record_light);
-	    recordRotate = (ImageView) findViewById(R.id.record_rotate);
-	    
-		resources = this.getResources();
-		
-		btnRecord = (Button) findViewById(R.id.start);
-		btnRecord.setOnClickListener(this);
-		gestureDetector = new GestureDetector(this);
-		gestureDetector.setOnDoubleTapListener(new OnDoubleTapListener() {
+    private GestureDetector gestureDetector;
 
-			public boolean onSingleTapConfirmed(MotionEvent e) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "双击结束录音",
-						Toast.LENGTH_LONG).show();
-				return false;
-			}
+    private ImageView recordLight, recordRotate;
 
-			public boolean onDoubleTapEvent(MotionEvent e) {
-				// TODO Auto-generated method stub
-				return false;
-			}
+    private Animation rotateAnimation, alphaAnimation;
 
-			public boolean onDoubleTap(MotionEvent e) {
-				// TODO Auto-generated method stub
-				releaseMediaRecorder();
-				return false;
-			}
-		});
+    public static final String STORAGE_LOCATION = Environment
+            .getExternalStorageDirectory()
+            + "/Android/data/uniquesudio.QuicK/record";
 
-		ViewTreeObserver vto = btnRecord.getViewTreeObserver();
-		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			public void onGlobalLayout() {
-				// TODO Auto-generated method stub
-				btnRecord.performClick();
-				Log.e("click", "click!");
-				btnRecord.getViewTreeObserver().removeGlobalOnLayoutListener(
-						this);
-			}
-		});
-		btnRecord.setVisibility(View.GONE);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.quick_record);
+        init();
+        initAnimation();
+    }
 
-	private void initAnimation() {
-	       rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-	        alphaAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_record);
-	        //设置匀速转动
-	        LinearInterpolator lir = new LinearInterpolator();  
-	        rotateAnimation.setInterpolator(lir);
-	        alphaAnimation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    // TODO Auto-generated method stub
-                    recordLight.startAnimation(animation);
-                }
+    @SuppressWarnings("deprecation")
+    private void init() {
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // TODO Auto-generated method stub
-                    
-                }
+        recordLight = (ImageView) findViewById(R.id.record_light);
+        recordRotate = (ImageView) findViewById(R.id.record_rotate);
 
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // TODO Auto-generated method stub
-                    
-                }
-            });
-	        rotateAnimation.setAnimationListener(new AnimationListener() {
-                
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // TODO Auto-generated method stub
-                    
-                }
-                
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // TODO Auto-generated method stub
-                    
-                }
-                
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    // TODO Auto-generated method stub
-                    recordRotate.startAnimation(animation);
-                }
-            });
-	        
-	        recordRotate.startAnimation(rotateAnimation);
-	        recordLight.startAnimation(alphaAnimation);
-	}
-	
-	
-	
-	public static boolean checkSDCard() {
-		String state = Environment.getExternalStorageState(); 
-		if (state.equals(Environment.MEDIA_MOUNTED))
-			return true;
-		else
-			return false;
-	}
+        resources = this.getResources();
 
-	public void recording() {
-	    String str = new String("record");
-	    byte[] tmp = str.getBytes();
-        myAsyncTask = new MyAsyncTask(quickRecord.this , 2 );
-        myAsyncTask.execute(tmp);
+        btnRecord = (Button) findViewById(R.id.start);
+        btnRecord.setOnClickListener(this);
+        gestureDetector = new GestureDetector(this);
+        gestureDetector.setOnDoubleTapListener(new OnDoubleTapListener() {
 
-	}
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "双击结束录音",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
 
-	public boolean onTouchEvent(MotionEvent event) {
-		return this.gestureDetector.onTouchEvent(event);
-	}
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                // TODO Auto-generated method stub
+                return false;
+            }
 
-	private void releaseMediaRecorder() {
-		String recordOK = resources.getString(R.string.recordOK);
-		Toast.makeText(getApplicationContext(), recordOK, Toast.LENGTH_LONG)
-				.show();
+            public boolean onDoubleTap(MotionEvent e) {
+                // TODO Auto-generated method stub
+                releaseMediaRecorder();
+                return false;
+            }
+        });
 
-		if (mRecorder != null) {
-			mRecorder.reset(); // 清除recorder配置
-			mRecorder.release(); // 释放recorder对象
-			mRecorder = null;
-		}
-		finish();
+        ViewTreeObserver vto = btnRecord.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                // TODO Auto-generated method stub
+                btnRecord.performClick();
+                Log.e("click", "click!");
+                btnRecord.getViewTreeObserver().removeGlobalOnLayoutListener(
+                        this);
+            }
+        });
+        btnRecord.setVisibility(View.GONE);
+    }
 
-	}
+    private void initAnimation() {
+        rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        alphaAnimation = AnimationUtils
+                .loadAnimation(this, R.anim.alpha_record);
+        // 设置匀速转动
+        LinearInterpolator lir = new LinearInterpolator();
+        rotateAnimation.setInterpolator(lir);
+        alphaAnimation.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                recordLight.startAnimation(animation);
+            }
 
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-		recording();
-	}
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
 
-	@Override
-	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+            }
 
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
 
-	@Override
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+            }
+        });
+        rotateAnimation.setAnimationListener(new AnimationListener() {
 
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
 
-	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+            }
 
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 1) {
-			releaseMediaRecorder();
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                recordRotate.startAnimation(animation);
+            }
+        });
+
+        recordRotate.startAnimation(rotateAnimation);
+        recordLight.startAnimation(alphaAnimation);
+    }
+
+    public static boolean checkSDCard() {
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED))
+            return true;
+        else
+            return false;
+    }
+
+    public void recording() {
+        if (quickRecord.checkSDCard()) {
+            String str = new String("record");
+            byte[] tmp = str.getBytes();
+            myAsyncTask = new MyAsyncTask(quickRecord.this, 2);
+            myAsyncTask.execute(tmp);
+        } else {
+            String noSDCard = getString(R.string.noSDCard);
+            Toast.makeText(getApplicationContext(), noSDCard, Toast.LENGTH_LONG)
+                    .show();
+        }
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        return this.gestureDetector.onTouchEvent(event);
+    }
+
+    private void releaseMediaRecorder() {
+        String recordOK = resources.getString(R.string.recordOK);
+        Toast.makeText(getApplicationContext(), recordOK, Toast.LENGTH_LONG)
+                .show();
+
+        if (mRecorder != null) {
+            mRecorder.reset(); // 清除recorder配置
+            mRecorder.release(); // 释放recorder对象
+            mRecorder = null;
+        }
+        finish();
+
+    }
+
+    public void onClick(View arg0) {
+        // TODO Auto-generated method stub
+        recording();
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+            float velocityY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+            float distanceY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 1) {
+            releaseMediaRecorder();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected void onPause() {
@@ -247,5 +258,4 @@ public class quickRecord extends Activity implements OnClickListener,
         releaseMediaRecorder();
     }
 
-	
 }

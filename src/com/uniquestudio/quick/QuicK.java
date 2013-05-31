@@ -2,6 +2,8 @@ package com.uniquestudio.quick;
 
 import java.io.File;
 
+import javax.security.auth.PrivateCredentialPermission;
+
 import com.uniquestudio.filechooser.FileChooserDialog;
 import com.uniquestudio.guide.GuideViewActivity;
 import com.uniquestudio.view.SwitchButton;
@@ -25,7 +27,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -41,6 +45,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class QuicK extends Activity {
 
@@ -108,8 +113,11 @@ public class QuicK extends Activity {
     private ImageView sanjiao_video, sanjiao_storage, sanjiao_help,
             sanjiao_about_us, theLastSanjiao;
 
-    // private ImageView camera_sanjiao_child , video_sanjiao_child ,
-    // about_sanjiao_child;
+    private ImageView blue_light;
+
+    private ImageView camera_sanjiao_child, video_sanjiao_child,
+            about_sanjiao_child;
+
     // 用于点击控制伸缩的一级控件的一部分 , 被***ViewGroup包裹着
     private RelativeLayout groupCamera, groupVideo, groupStorage, groupHelp,
             groupAboutUs;
@@ -126,6 +134,10 @@ public class QuicK extends Activity {
 
     // 记录下目前的高度
     private int myViewHeight;
+    
+    private float mFirstDownY; // 首次按下的Y
+
+    private float mFirstDownX; // 首次按下的X
 
     private Thread thread;
 
@@ -137,10 +149,24 @@ public class QuicK extends Activity {
             super.handleMessage(msg);
             LinearLayout.LayoutParams linear = (LinearLayout.LayoutParams) ((ViewGroup) msg.obj)
                     .getLayoutParams();
-
+            switch (threadMessage) {
+            case CAMERA_CLOSE:
+            case CAMERA_OPEN:
+                myViewHeight += cameraHeight / 8;
+                break;
+            case VIDEO_CLOSE:
+            case VIDEO_OPEN:
+                myViewHeight += videoHeight / 4;
+                break;
+            default:
+                break;
+            }
+            
+            
             switch (msg.arg1) {
             case MSG_SHUT:
-                myViewHeight += msg.arg2 / 6;
+                // myViewHeight += msg.arg2 / 4;
+
                 linear.height = msg.arg2 - myViewHeight;
                 if (linear.height > 0) {
 
@@ -156,6 +182,7 @@ public class QuicK extends Activity {
                         groupCamera
                                 .setBackgroundResource(R.drawable.blue_bg_fang);
                         sanjiao_video.setVisibility(0);
+                        blue_light.setVisibility(8);
                         break;
 
                     case VIDEO_CLOSE:
@@ -164,11 +191,11 @@ public class QuicK extends Activity {
                         sanjiao_storage.setVisibility(0);
                         break;
 
-                    case ABOUT_CLOSE:
-                        groupAboutUs
-                                .setBackgroundResource(R.drawable.blue_bg_fang);
-                        theLastSanjiao.setVisibility(0);
-                        break;
+//                    case ABOUT_CLOSE:
+//                        groupAboutUs
+//                                .setBackgroundResource(R.drawable.blue_bg_fang);
+//                        theLastSanjiao.setVisibility(0);
+//                        break;
                     default:
                         break;
                     }
@@ -177,7 +204,7 @@ public class QuicK extends Activity {
                 ((ViewGroup) msg.obj).setLayoutParams(linear);
                 break;
             case MSG_EXPAND:
-                myViewHeight += msg.arg2 / 6;
+                // myViewHeight += msg.arg2 / 4;
                 linear.height = myViewHeight;
                 if (linear.height < msg.arg2) {
 
@@ -256,12 +283,13 @@ public class QuicK extends Activity {
         sanjiao_storage = (ImageView) findViewById(R.id.sanjiao_storage);
         sanjiao_video = (ImageView) findViewById(R.id.sanjiao_vedio);
         theLastSanjiao = (ImageView) findViewById(R.id.the_last_sanjiao);
+
+        blue_light = (ImageView) findViewById(R.id.blue_light);
         // camera_sanjiao_child = (ImageView)
         // findViewById(R.id.camera_sanjiao_child);
         // video_sanjiao_child = (ImageView)
         // findViewById(R.id.video_sanjiao_child);
-        // about_sanjiao_child = (ImageView)
-        // findViewById(R.id.about_sanjiao_child);
+        about_sanjiao_child = (ImageView) findViewById(R.id.about_sanjiao_child);
 
         // 存储高度,
 
@@ -278,10 +306,10 @@ public class QuicK extends Activity {
                             .getLayoutParams();
                     linearlayout.height = 0;
                     videoViewGroup.setLayoutParams(linearlayout);
-                    linearlayout = (LinearLayout.LayoutParams) aboutViewGroup
-                            .getLayoutParams();
-                    linearlayout.height = 0;
-                    aboutViewGroup.setLayoutParams(linearlayout);
+//                    linearlayout = (LinearLayout.LayoutParams) aboutViewGroup
+//                            .getLayoutParams();
+//                    linearlayout.height = 0;
+//                    aboutViewGroup.setLayoutParams(linearlayout);
                     Log.e("fffffffff", cameraHeight + "---" + videoHeight
                             + "---" + aboutUsHeight);
                     measured = true;
@@ -302,11 +330,12 @@ public class QuicK extends Activity {
         photoAutoFocus.setCheckedDelayed(sharedPreferences.getBoolean(
                 "photo_autofocus", true));
         vedioFlash.setCheckedDelayed(sharedPreferences.getBoolean(
-                "vedio_flash", false));
+                "video_flash", false));
 
     }
 
     public void setOnclickListener() {
+        //title_background
         groupCamera.setOnClickListener(new groupClickListener());
         groupCamera.setId(1);
         groupVideo.setOnClickListener(new groupClickListener());
@@ -317,6 +346,35 @@ public class QuicK extends Activity {
         groupHelp.setId(4);
         groupAboutUs.setOnClickListener(new groupClickListener());
         groupAboutUs.setId(5);
+        
+//        groupStorage.setOnTouchListener(new OnTouchListener() {
+//            
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                // TODO Auto-generated method stub
+//                
+//                int action = event.getAction();
+//                float x = event.getX();
+//                float y = event.getY();
+//                float deltaX = Math.abs(x - mFirstDownX);
+//                float deltaY = Math.abs(y - mFirstDownY);
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        mFirstDownX = x;
+//                        mFirstDownY = y;
+//                        groupStorage.setBackgroundResource(R.drawable.grey_bg_fang);
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        groupStorage.setBackgroundResource(R.drawable.blue_bg_fang);
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+        //title
         photoTitle.setOnClickListener(new groupClickListener());
         photoTitle.setId(6);
         videoTitle.setOnClickListener(new groupClickListener());
@@ -327,6 +385,7 @@ public class QuicK extends Activity {
         helpTitle.setId(14);
         storageTitle.setOnClickListener(new groupClickListener());
         storageTitle.setId(15);
+        //checkbox
         photoImediate.setOnCheckedChangeListener(new checkBoxListener());
         photoImediate.setId(9);
         photoContinuous.setOnCheckedChangeListener(new checkBoxListener());
@@ -387,8 +446,10 @@ public class QuicK extends Activity {
                         groupCamera
                                 .setBackgroundResource(R.drawable.grey_bg_fang);
                         sanjiao_video.setVisibility(8);
+                        blue_light.setVisibility(0);
                     } else {
                         threadMessage = CAMERA_CLOSE;
+
                     }
                     thread = new Thread(runnable);
                     thread.start();
@@ -416,48 +477,63 @@ public class QuicK extends Activity {
             case 3:
             case 15:
                 // 存储位置
-                quickPhoto.isDirExist(STORAGE_LOCATION_PHOTO);
-                quickPhoto.isDirExist(STORAGE_LOCATION_VIDEO);
-                quickPhoto.isDirExist(STORAGE_LOCATION_RECORD);
-                // 调用文件管理器
-                Intent intent = new Intent(getBaseContext(),
-                        FileChooserDialog.class);
-                intent.putExtra(FileChooserDialog.START_PATH, STORAGE_LOCATION);
-                intent.putExtra(FileChooserDialog.SELECT_MODE,
-                        FileChooserDialog.MODE_OPEN);
-                startActivityForResult(intent, 1);
+                if (quickRecord.checkSDCard()) {
+
+                    quickPhoto.isDirExist(STORAGE_LOCATION_PHOTO);
+                    quickPhoto.isDirExist(STORAGE_LOCATION_VIDEO);
+                    quickPhoto.isDirExist(STORAGE_LOCATION_RECORD);
+                    // 调用文件管理器
+                    Intent intent = new Intent(getBaseContext(),
+                            FileChooserDialog.class);
+                    intent.putExtra(FileChooserDialog.START_PATH,
+                            STORAGE_LOCATION);
+                    intent.putExtra(FileChooserDialog.SELECT_MODE,
+                            FileChooserDialog.MODE_OPEN);
+                    startActivityForResult(intent, 1);
+
+                } else {
+                    String noSDCard = getString(R.string.noSDCard);
+                    Toast.makeText(getApplicationContext(), noSDCard,
+                            Toast.LENGTH_SHORT).show();
+                }
                 break;
             case 4:
             case 14:
                 // 帮助
                 Intent intent_help = new Intent(QuicK.this,
                         GuideViewActivity.class);
+                intent_help.putExtra("id", 1);
                 startActivity(intent_help);
                 finish();
                 break;
             case 5:
             case 8:
                 // 关于我们
-                if (!isAnimating) {
-                    isExpand_about = !isExpand_about;
+                // if (!isAnimating) {
+                isExpand_about = !isExpand_about;
 
-                    if (isExpand_about) {
-                        threadMessage = ABOUT_OPEN;
-                        groupAboutUs
-                                .setBackgroundResource(R.drawable.grey_bg_fang);
-                        theLastSanjiao.setVisibility(8);
-                    } else {
-                        threadMessage = ABOUT_CLOSE;
-                    }
-                    thread = new Thread(runnable);
-                    thread.start();
+                if (isExpand_about) {
+                    groupAboutUs.setBackgroundResource(R.drawable.grey_bg_fang);
+                    aboutViewGroup.setVisibility(0);
+                    theLastSanjiao.setVisibility(8);
+                    // threadMessage = ABOUT_OPEN;
+
+                } else {
+                    // threadMessage = ABOUT_CLOSE;
+                    groupAboutUs.setBackgroundResource(R.drawable.blue_bg_fang);
+                    about_sanjiao_child
+                            .setBackgroundResource(R.drawable.blue_bg_sanjiao);
+                    aboutViewGroup.setVisibility(8);
+                    theLastSanjiao.setVisibility(0);
                 }
+                // thread = new Thread(runnable);
+                // thread.start();
+                // }
                 break;
             default:
                 break;
             }
         }
-
     }
 
     Runnable runnable = new Runnable() {
@@ -488,16 +564,16 @@ public class QuicK extends Activity {
                 message.arg2 = videoHeight;
                 message.obj = videoViewGroup;
                 break;
-            case ABOUT_CLOSE:
-                message.arg1 = MSG_SHUT;
-                message.arg2 = aboutUsHeight;
-                message.obj = aboutViewGroup;
-                break;
-            case ABOUT_OPEN:
-                message.arg1 = MSG_EXPAND;
-                message.arg2 = aboutUsHeight;
-                message.obj = aboutViewGroup;
-                break;
+//            case ABOUT_CLOSE:
+//                message.arg1 = MSG_SHUT;
+//                message.arg2 = aboutUsHeight;
+//                message.obj = aboutViewGroup;
+//                break;
+//            case ABOUT_OPEN:
+//                message.arg1 = MSG_EXPAND;
+//                message.arg2 = aboutUsHeight;
+//                message.obj = aboutViewGroup;
+//                break;
 
             default:
                 break;
@@ -581,26 +657,6 @@ public class QuicK extends Activity {
         initView();
 
         super.onResume();
-    }
-
-    private void setExpandAnimation(ViewGroup myLayout) {
-        AnimationSet set = new AnimationSet(true);
-
-        Animation animation = new AlphaAnimation(0.0f, 1.0f);
-        animation.setDuration(250);
-        set.addAnimation(animation);
-
-        animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-
-        animation.setDuration(150);
-        set.addAnimation(animation);
-
-        LayoutAnimationController controller = new LayoutAnimationController(
-                set, 0.25f);
-        myLayout.setLayoutAnimation(controller);
-
     }
 
 }

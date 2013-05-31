@@ -18,17 +18,17 @@ public class widgetTaker extends AppWidgetProvider{
             //photo
             Intent intent_photo = new Intent(context, quickPhoto.class);
             PendingIntent pi_photo = PendingIntent.getActivity(context, 0, intent_photo, 0);
-            views.setOnClickPendingIntent(R.id.photo_small, pi_photo);
+            views.setOnClickPendingIntent(R.id.photo_s, pi_photo);
             
             //video
             Intent intent_video = new Intent(context, quickVideo.class);
             PendingIntent pi_video = PendingIntent.getActivity(context, 0, intent_video, 0);
-            views.setOnClickPendingIntent(R.id.video_small, pi_video);
+            views.setOnClickPendingIntent(R.id.video_s, pi_video);
             
             //record
             Intent intent_record = new Intent(context, quickRecord.class);
             PendingIntent pi_record = PendingIntent.getActivity(context, 0, intent_record, 0);
-            views.setOnClickPendingIntent(R.id.record_small, pi_record);
+            views.setOnClickPendingIntent(R.id.record_s, pi_record);
             
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

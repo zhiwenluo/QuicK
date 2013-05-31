@@ -5,9 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import com.uniquestudio.asynctask.MyAsyncTask;
 
+import android.R.layout;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,6 +19,8 @@ import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.PreviewCallback;
+import android.hardware.Camera.Size;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +39,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -48,7 +53,8 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
     Button button1;
 
     ImageView photo_take_bg;
-//    ImageView imageView1;
+
+    // ImageView imageView1;
 
     Camera camera;
 
@@ -64,6 +70,18 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
 
     Boolean isImediate = true;
 
+    Boolean photo_flash = false;
+
+    List<Camera.Size> sizes;
+
+    List<Camera.Size> psizes;
+
+    Size size;
+
+    Size pSize;
+
+    private ImageButton photoFlash;
+
     public static int photoQulity = 100;
 
     public static final String STORAGE_LOCATION = Environment
@@ -71,12 +89,14 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
             + "/Android/data/uniquesudio.QuicK/photo";
 
     private MyAsyncTask myAsyncTask;
-    
+
     private Camera.Parameters parameters;
 
     private GestureDetector gestureDetector;
 
     private Animation alphaAnimation;
+
+    private boolean havaSurfaceView = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,14 +106,16 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
         continuation = sharedPreferences.getBoolean("photo_continuous", false);
         isAutoFocus = sharedPreferences.getBoolean("photo_autofocus", true);
         isImediate = sharedPreferences.getBoolean("photo_imediate", true);
-        canTap = isImediate? false:true;
-        
-        alphaAnimation = AnimationUtils.loadAnimation(this , R.anim.alpha);
-        
+        photo_flash = sharedPreferences.getBoolean("photo_flash", false);
+        canTap = isImediate ? false : true;
+
+        alphaAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha);
+
+        photoFlash = (ImageButton) findViewById(R.id.flash_photo_bt);
         button1 = (Button) findViewById(R.id.button1);
         surfaceView1 = (SurfaceView) findViewById(R.id.surfaceView1);
         photo_take_bg = (ImageView) findViewById(R.id.photo_take_bg);
-//        imageView1 = (ImageView) findViewById(R.id.imageView1);
+        // imageView1 = (ImageView) findViewById(R.id.imageView1);
         surfaceHolder = surfaceView1.getHolder();
         surfaceHolder.setKeepScreenOn(true); // 使摄像头一直保持高亮
         surfaceHolder.setFixedSize(176, 144);
@@ -103,6 +125,10 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
         autoFocusCallback = new AutoFocusCallback() {
             public void onAutoFocus(boolean success, Camera camera) {
                 // TODO Auto-generated method stub
+                // 拍照时的界面闪光效果
+                photo_take_bg.startAnimation(alphaAnimation);
+                photo_take_bg.setVisibility(8);
+
                 if (success) {
                     // 对焦成功拍照
                     if (camera != null)
@@ -111,8 +137,7 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
                     if (camera != null)
                         camera.takePicture(null, null, jpeg);
                 }
-                photo_take_bg.startAnimation(alphaAnimation);
-                photo_take_bg.setVisibility(8);
+
                 Toast.makeText(getApplicationContext(), "拍照成功!",
                         Toast.LENGTH_SHORT).show();
             }
@@ -123,22 +148,27 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
 
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 // TODO Auto-generated method stub
-                Log.e("continuation", continuation + "");
-                if (!continuation)
-                    Toast.makeText(getApplicationContext(), "双击拍摄",
-                            Toast.LENGTH_LONG).show();
-                else {
-                    continuation = false;
-                    Toast.makeText(getApplicationContext(), "连拍取消",
-                            Toast.LENGTH_LONG).show();
-                }
+                String long_press = getString(R.string.long_press);
+                Toast.makeText(getApplicationContext(), long_press,
+                        Toast.LENGTH_LONG).show();
                 return false;
             }
 
             public boolean onDoubleTapEvent(MotionEvent e) {
                 // TODO Auto-generated method stub
-                if (canTap)
-                    button1.performClick();
+                Log.e("continuation", continuation + "");
+                if (!continuation) {
+                    if (canTap)
+                        button1.performClick();
+                }
+                // Toast.makeText(getApplicationContext(), "双击拍摄",
+                // Toast.LENGTH_LONG).show();
+                else {
+                    continuation = false;
+                    Toast.makeText(getApplicationContext(), "连拍取消",
+                            Toast.LENGTH_LONG).show();
+                }
+
                 return true;
             }
 
@@ -151,27 +181,65 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
         button1.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                camera.setParameters(parameters);
-                if (isAutoFocus) {
-                    camera.autoFocus(autoFocusCallback);
-                } else {
-                    if (camera != null)
-                        photo_take_bg.startAnimation(alphaAnimation);
-                    photo_take_bg.setVisibility(8);
-                        camera.takePicture(null, null, jpeg);
-                    Toast.makeText(getApplicationContext(), "拍照成功!",
-                            Toast.LENGTH_SHORT).show();
+                if (parameters == null) {
+                    Log.e("fffffffffff", "meicamera");
                 }
+                camera.setParameters(parameters);
+                if (isGif) {
+                    // 进行gif
+
+                } else {
+                    //
+                    if (isAutoFocus) {
+                        camera.autoFocus(autoFocusCallback);
+                    } else {
+                        if (camera != null) {
+                            // 拍照时的界面闪光效果
+                            photo_take_bg.startAnimation(alphaAnimation);
+                            photo_take_bg.setVisibility(8);
+                            camera.takePicture(null, null, jpeg);
+                            Toast.makeText(getApplicationContext(), "拍照成功!",
+                                    Toast.LENGTH_SHORT).show();
+                        }//if camera != null
+                    }// if isAutoFocus
+                }// if isGif
             }
         });
+        // 闪光灯的开关
+        photoFlash.setOnClickListener(new OnClickListener() {
 
-        ViewTreeObserver vto = surfaceView1.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
-            public void onGlobalLayout() {
+            @Override
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
-                ViewTreeObserver vto2 = button1.getViewTreeObserver();
-                if (isImediate) {
+                if (photo_flash) {
+                    parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
+                    photoFlash
+                            .setBackgroundResource(R.drawable.widget_photo_pressed);// off
+                } else {
+                    parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
+                    photoFlash.setBackgroundResource(R.drawable.widget_photo);// on
+                }
+                photo_flash = !photo_flash;
+                camera.setParameters(parameters);
+
+            }
+        });
+        //
+        // if (havaSurfaceView) {
+        //
+        // ViewTreeObserver vto = surfaceView1.getViewTreeObserver();
+        // vto.addOnGlobalLayoutListener(new onGlobalLayoutListener());
+        // }
+    }
+
+    class onGlobalLayoutListener implements OnGlobalLayoutListener {
+
+        @Override
+        public void onGlobalLayout() {
+
+            // TODO Auto-generated method stub
+            ViewTreeObserver vto2 = button1.getViewTreeObserver();
+            if (isImediate) {
                 vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
                         // TODO Auto-generated method stub
@@ -180,33 +248,70 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
                         button1.getViewTreeObserver()
                                 .removeGlobalOnLayoutListener(this);
                     }
-                });}
-                int height = button1.getHeight();
-                int width = button1.getWidth();
-                Log.e("height + weight", height + ":" + width);
-
-                button1.setVisibility(View.GONE);// 这一句非常重要！
-
-                surfaceView1.getViewTreeObserver()
-                        .removeGlobalOnLayoutListener(this);
+                });
             }
-        });
+            int height = button1.getHeight();
+            int width = button1.getWidth();
+            Log.e("height + weight", height + ":" + width);
+
+            button1.setVisibility(View.GONE);// 这一句非常重要！
+
+            surfaceView1.getViewTreeObserver().removeGlobalOnLayoutListener(
+                    this);
+        }
     }
+
+    PreviewCallback previewCallback = new PreviewCallback() {
+
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            // TODO Auto-generated method stub
+            if (quickRecord.checkSDCard()) {
+                if (data != null) {
+                    Camera.Parameters p = camera.getParameters();
+                    p.setPreviewFrameRate(4);// 设置每秒取的帧数
+                    camera.setParameters(p);
+
+                    int width = p.getPreviewSize().width;
+                    int height = p.getPreviewSize().height;
+                    Log.e("fuck", "preview width: " + width + " height: "
+                            + height);
+                    if (width > 320 || height > 240) {
+                        // 有些手机显示的比较大
+                        Toast.makeText(quickPhoto.this,
+                                "width " + width + " height " + height,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else {
+                String noSDCard = getString(R.string.noSDCard);
+                Toast.makeText(getApplicationContext(), noSDCard,
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     PictureCallback jpeg = new PictureCallback() {
         public void onPictureTaken(byte[] data, Camera camera) {
             // TODO Auto-generated method stub
-            //每次都需要ｎｅｗ一个ｉｎｓｔａｎｃｅ
-            myAsyncTask = new MyAsyncTask(quickPhoto.this , 0 );
-            myAsyncTask.execute(data);
+            // 每次都需要ｎｅｗ一个ｉｎｓｔａｎｃｅ
 
-            camera.startPreview();
-            canTap = true;// 可以接受点击事件
-            // 需要手动重新startPreview，否则停在拍下的瞬间
-            if (continuation) {
-                // 如果是连续拍摄情况下，仍然不能点击
-                canTap = false;
-                button1.performClick();
+            if (quickRecord.checkSDCard()) {
+                myAsyncTask = new MyAsyncTask(quickPhoto.this, 0);
+                myAsyncTask.execute(data);
+
+                camera.startPreview();
+                canTap = true;// 可以接受点击事件
+                // 需要手动重新startPreview，否则停在拍下的瞬间
+                if (continuation) {
+                    // 如果是连续拍摄情况下，仍然不能点击
+                    canTap = false;
+                    button1.performClick();
+                }
+            } else {
+                String noSDCard = getString(R.string.noSDCard);
+                Toast.makeText(getApplicationContext(), noSDCard,
+                        Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -216,16 +321,31 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
         try {
             camera = Camera.open();
             parameters = camera.getParameters();
+            // 获取支持的分辨率
+            sizes = parameters.getSupportedPictureSizes();
+            psizes = parameters.getSupportedPreviewSizes();
+            size = sizes.get(0);
+            pSize = psizes.get(0);
+            Log.e("fffffff", size.height + " " + size.width);
+
             parameters.setPictureFormat(PixelFormat.JPEG);
             parameters.setFlashMode(sharedPreferences.getBoolean("photo_flash",
                     false) ? Parameters.FLASH_MODE_TORCH
                     : Parameters.FLASH_MODE_OFF);
+            parameters.set("rotation", 90);
+            parameters.setPreviewSize(pSize.width, pSize.height);
+            // parameters.setPictureSize(size.width , size.height);
             camera.setParameters(parameters);
             // 设置参数
             camera.setPreviewDisplay(surfaceHolder);
             // 摄像头画面显示在Surface上
-            camera.startPreview();
+
             camera.setDisplayOrientation(90);
+            camera.startPreview();
+            havaSurfaceView = true;
+
+            ViewTreeObserver vto = surfaceView1.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new onGlobalLayoutListener());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -320,8 +440,6 @@ public class quickPhoto extends Activity implements SurfaceHolder.Callback,
         }
         finish();
     }
-    
-    
 
     @Override
     protected void onStop() {

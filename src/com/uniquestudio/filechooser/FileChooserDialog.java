@@ -332,7 +332,12 @@ public class FileChooserDialog extends ListActivity {
         Log.e("ffffff", file.toString());
         switch (item.getItemId()) {
         case 1:
-            deleteFile(file);
+            if (file.getName().equals("uniquesudio.QuicK")) {
+                Toast.makeText(FileChooserDialog.this, "Illegal operation..",
+                        Toast.LENGTH_SHORT).show();
+            }else {
+                deleteFile(file);
+            }
 
             break;
 
@@ -355,6 +360,7 @@ public class FileChooserDialog extends ListActivity {
         this.confirmDialog("删除文件", "确定要删除文件吗？ ",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+
                         // 确定删除
                         try {
                             // 删除文件

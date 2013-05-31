@@ -31,7 +31,8 @@
         android:id="@+id/AboutViewGroup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <RelativeLayout
             android:id="@+id/child_about_1"
