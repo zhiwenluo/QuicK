@@ -4,4 +4,4 @@ QuicK
 
 Feature
 =====
-- 打开APP即立刻拍照
+- 打开APP即立刻拍照或者录像
